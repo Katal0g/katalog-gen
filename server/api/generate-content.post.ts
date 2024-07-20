@@ -7,7 +7,12 @@ export default defineEventHandler(async (event) => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
+
   try {
+    const userPrompt = body.customPrompt
+        ? body.customPrompt
+        : buildUserPrompt(body.level, body.subject, body.title, body.nbQuestions);
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -17,12 +22,7 @@ export default defineEventHandler(async (event) => {
         },
         {
           role: "user",
-          content: buildUserPrompt(
-            body.level,
-            body.subject,
-            body.title,
-            body.nbQuestions,
-          ),
+          content: userPrompt,
         },
       ],
     });

@@ -13,6 +13,9 @@ export default defineI18nConfig(() => ({
         nbQuestions: "Nb of questions",
         robotsWorking:
             "Our little robots are working hard to generate the content...",
+        expertMode: "Expert Mode",
+        customPrompt: "Custom Prompt",
+        enterCustomPrompt: "Enter your custom prompt here..."
       },
       scholar: {
         level: "Level",
@@ -38,6 +41,9 @@ export default defineI18nConfig(() => ({
         nbQuestions: "Nb de questions",
         robotsWorking:
             "Nos petits robots travaillent dur pour générer le contenu...",
+        expertMode: "Mode Expert",
+        customPrompt: "Prompt personnalisé",
+        enterCustomPrompt: "Entrez votre prompt personnalisé ici..."
       },
       scholar: {
         level: "Niveau",
