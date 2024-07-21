@@ -15,7 +15,9 @@ export default defineI18nConfig(() => ({
             "Our little robots are working hard to generate the content...",
         expertMode: "Expert Mode",
         customPrompt: "Custom Prompt",
-        enterCustomPrompt: "Enter your custom prompt here..."
+        enterCustomPrompt: "Enter your custom prompt here...",
+        resetCustomPrompt: "Reset Custom Prompt",
+        seeCompletePrompt: "See complete prompt"
       },
       scholar: {
         level: "Level",
@@ -43,7 +45,9 @@ export default defineI18nConfig(() => ({
             "Nos petits robots travaillent dur pour générer le contenu...",
         expertMode: "Mode Expert",
         customPrompt: "Prompt personnalisé",
-        enterCustomPrompt: "Entrez votre prompt personnalisé ici..."
+        enterCustomPrompt: "Entrez votre prompt personnalisé ici...",
+        resetCustomPrompt: "Réinitialiser le prompt personnalisé",
+        seeCompletePrompt: "Voir le prompt complet"
       },
       scholar: {
         level: "Niveau",

@@ -3,45 +3,48 @@
       class="flex flex-col gap-2"
       :state="state"
       @submit="generateContent"
-      :schema="schema"
+      :schema="isExpertMode ? null : schema"
   >
 
-    <!-- Regular fields (always visible) -->
-    <UFormGroup :label="$t('scholar.level')" name="level" required>
-      <USelect
-          v-model="state.level"
-          :options="levels"
-          :placeholder="
+    <div class="flex gap-2 w-full">
+      <UFormGroup class="flex-grow" :label="$t('scholar.level')" name="level" required>
+        <USelect
+            v-model="state.level"
+            :options="levels"
+            :placeholder="
           $t('utils.select', { field: $t('scholar.level').toLowerCase() })
         "
-      />
-    </UFormGroup>
+        />
+      </UFormGroup>
 
-    <UFormGroup :label="$t('scholar.subject')" name="subject" required>
-      <UInput
-          v-model="state.subject"
-          :placeholder="
+      <UFormGroup :label="$t('scholar.subject')" name="subject" required>
+        <UInput
+            v-model="state.subject"
+            :placeholder="
           $t('utils.select', { field: $t('scholar.subject').toLowerCase() })
         "
-      />
-    </UFormGroup>
+        />
+      </UFormGroup>
+    </div>
 
-    <UFormGroup :label="$t('scholar.title')" name="title" required>
-      <UInput
-          v-model="state.title"
-          :placeholder="
+    <div class="flex gap-2 w-full">
+      <UFormGroup class="flex-grow" :label="$t('scholar.title')" name="title" required>
+        <UInput
+            v-model="state.title"
+            :placeholder="
           $t('utils.enter', { field: $t('scholar.title').toLowerCase() })
         "
-      />
-    </UFormGroup>
+        />
+      </UFormGroup>
+      <UFormGroup
+          :label="$t('generatorPage.nbQuestions')"
+          name="nbQuestions"
+          required
+      >
+        <UInput type="number" placeholder="5" v-model="state.nbQuestions" />
+      </UFormGroup>
 
-    <UFormGroup
-        :label="$t('generatorPage.nbQuestions')"
-        name="nbQuestions"
-        required
-    >
-      <UInput type="number" placeholder="5" v-model="state.nbQuestions" />
-    </UFormGroup>
+    </div>
 
     <!-- Toggle for Expert Mode -->
     <UFormGroup :label="$t('generatorPage.expertMode')">
@@ -50,15 +53,43 @@
 
     <!-- Custom prompt (only visible in expert mode) -->
     <div v-if="isExpertMode">
-      <UFormGroup :label="$t('generatorPage.customPrompt')" required>
+      <UFormGroup required >
+        <template #label>
+          <span class="pr-1">{{$t('generatorPage.customPrompt')}}</span>
+        </template>
+        <template #hint>
+          <div class="flex gap-2 pb-1">
+            <UTooltip
+                :text="$t('generatorPage.resetCustomPrompt')"
+            >
+              <UButton
+                  class="p-0"
+                  icon="i-heroicons-arrow-path-16-solid"
+                  variant="link"
+                  color="amber"
+                  @click="resetForm"
+              />
+            </UTooltip>
+            <UTooltip
+                :text="$t('generatorPage.seeCompletePrompt')"
+            >
+              <UButton
+                  class="p-0"
+                  icon="i-heroicons-information-circle"
+                  variant="link"
+                  @click="state.customPrompt = initialCustomPrompt"
+              />
+            </UTooltip>
+
+          </div>
+        </template>
         <UTextarea
             v-model="state.customPrompt"
             :placeholder="$t('generatorPage.enterCustomPrompt')"
-            :rows="10"
+            :rows="7"
         />
       </UFormGroup>
     </div>
-
 
     <UButton
         class="mt-2 py-2"
@@ -95,7 +126,6 @@ const { levels, loading } = toRefs(props);
 // Local state
 const isExpertMode = ref(false);
 
-// Zod schema for form validation
 const schema = computed(() => {
   const baseSchema = {
     level: z.string().min(1, { message: "Obligatoire" }) as z.ZodType<Level>,
@@ -104,20 +134,13 @@ const schema = computed(() => {
     nbQuestions: z.number().min(1, { message: "Minimum 1 question" }),
   };
 
-  if (isExpertMode.value) {
-    return z.object({
-      ...baseSchema,
-      customPrompt: z.string().min(1, { message: "Obligatoire" }),
-    });
-  } else {
-    return z.object(baseSchema);
-  }
+  return z.object(baseSchema);
 });
 
 const state = reactive({
-  level: undefined as Level | undefined,
-  subject: undefined as Subject | undefined,
-  title: undefined as string | undefined,
+  level: "" as Level,
+  subject: "" as Subject,
+  title: "" as string,
   nbQuestions: 5,
   customPrompt: "",
 });
@@ -131,6 +154,13 @@ const initialCustomPrompt = computed(() => {
     );
     return `${userPrompt}`;
 });
+
+const resetForm = () => {
+  state.level = "";
+  state.subject = "" as Subject;
+  state.title = "";
+  state.nbQuestions = 5;
+};
 
 watch(isExpertMode, (newValue) => {
   if (newValue) {
@@ -157,20 +187,34 @@ watch(
 const generateContent = async () => {
   emit("update:loading", true);
   try {
-    const requestBody = isExpertMode.value
-        ? {
-          customPrompt: state.customPrompt,
-          level: state.level,
-          subject: state.subject,
-          title: state.title,
-          nbQuestions: state.nbQuestions,
-        }
-        : {
-          level: state.level,
-          subject: state.subject,
-          title: state.title,
-          nbQuestions: state.nbQuestions,
+    let requestBody;
+
+    if (isExpertMode.value) {
+      // In expert mode, use the custom prompt without validation
+      requestBody = {
+        customPrompt: state.customPrompt,
+        level: state.level,
+        subject: state.subject,
+        title: state.title,
+        nbQuestions: state.nbQuestions,
+      };
+    } else {
+      // In non-expert mode, validate the form
+      try {
+        const validatedData = schema.value.parse(state);
+        requestBody = {
+          level: validatedData.level,
+          subject: validatedData.subject,
+          title: validatedData.title,
+          nbQuestions: validatedData.nbQuestions,
         };
+      } catch (validationError) {
+        // Handle validation errors (e.g., display error messages)
+        console.error("Validation error:", validationError);
+        emit("update:loading", false);
+        return;
+      }
+    }
 
     const response = await $fetch("/api/generate-content", {
       method: "POST",
