@@ -10,14 +10,15 @@ export default defineI18nConfig(() => ({
         export: "Export",
         contentPlaceholder: "Your content will be generated here...",
         generateContent: "Generate the content",
-        nbQuestions: "Nb of questions",
+        nbQuestions: "Nb questions",
         robotsWorking:
-            "Our little robots are working hard to generate the content...",
+          "Our little robots are working hard to generate the content...",
         expertMode: "Expert Mode",
         customPrompt: "Custom Prompt",
         enterCustomPrompt: "Enter your custom prompt here...",
         resetCustomPrompt: "Reset Custom Prompt",
-        seeCompletePrompt: "See complete prompt"
+        seeCompletePrompt: "See complete prompt",
+        systemPrompt: "System prompt (always sent)",
       },
       scholar: {
         level: "Level",
@@ -40,14 +41,15 @@ export default defineI18nConfig(() => ({
         export: "Exporter",
         contentPlaceholder: "Votre contenu sera généré ici...",
         generateContent: "Générer le contenu",
-        nbQuestions: "Nb de questions",
+        nbQuestions: "Nb questions",
         robotsWorking:
-            "Nos petits robots travaillent dur pour générer le contenu...",
+          "Nos petits robots travaillent dur pour générer le contenu...",
         expertMode: "Mode Expert",
         customPrompt: "Prompt personnalisé",
         enterCustomPrompt: "Entrez votre prompt personnalisé ici...",
         resetCustomPrompt: "Réinitialiser le prompt personnalisé",
-        seeCompletePrompt: "Voir le prompt complet"
+        seeCompletePrompt: "Voir le prompt complet",
+        systemPrompt: "Prompt système (toujours envoyé)",
       },
       scholar: {
         level: "Niveau",

@@ -1,103 +1,69 @@
 <template>
   <UForm
-      class="flex flex-col gap-2"
-      :state="state"
-      @submit="generateContent"
-      :schema="isExpertMode ? null : schema"
+    class="flex flex-col gap-2"
+    :state="state"
+    @submit="generateContent"
+    :schema="isExpertMode ? null : schema"
   >
+    <FormFields :state="state" :levels="levels" />
 
-    <div class="flex gap-2 w-full">
-      <UFormGroup class="flex-grow" :label="$t('scholar.level')" name="level" required>
-        <USelect
-            v-model="state.level"
-            :options="levels"
-            :placeholder="
-          $t('utils.select', { field: $t('scholar.level').toLowerCase() })
-        "
-        />
-      </UFormGroup>
+    <FormExpertModeToggle v-model="isExpertMode" />
 
-      <UFormGroup :label="$t('scholar.subject')" name="subject" required>
-        <UInput
-            v-model="state.subject"
-            :placeholder="
-          $t('utils.select', { field: $t('scholar.subject').toLowerCase() })
-        "
-        />
-      </UFormGroup>
-    </div>
+    <FormCustomPromptField
+      v-if="isExpertMode"
+      v-model="state.customPrompt"
+      @reset="resetForm"
+      @open-modal="isOpen = true"
+    />
 
-    <div class="flex gap-2 w-full">
-      <UFormGroup class="flex-grow" :label="$t('scholar.title')" name="title" required>
-        <UInput
-            v-model="state.title"
-            :placeholder="
-          $t('utils.enter', { field: $t('scholar.title').toLowerCase() })
-        "
-        />
-      </UFormGroup>
-      <UFormGroup
-          :label="$t('generatorPage.nbQuestions')"
-          name="nbQuestions"
-          required
+    <UModal v-model="isOpen">
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
       >
-        <UInput type="number" placeholder="5" v-model="state.nbQuestions" />
-      </UFormGroup>
-
-    </div>
-
-    <!-- Toggle for Expert Mode -->
-    <UFormGroup :label="$t('generatorPage.expertMode')">
-      <UToggle v-model="isExpertMode" />
-    </UFormGroup>
-
-    <!-- Custom prompt (only visible in expert mode) -->
-    <div v-if="isExpertMode">
-      <UFormGroup required >
-        <template #label>
-          <span class="pr-1">{{$t('generatorPage.customPrompt')}}</span>
-        </template>
-        <template #hint>
-          <div class="flex gap-2 pb-1">
-            <UTooltip
-                :text="$t('generatorPage.resetCustomPrompt')"
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              <UButton
-                  class="p-0"
-                  icon="i-heroicons-arrow-path-16-solid"
-                  variant="link"
-                  color="amber"
-                  @click="resetForm"
-              />
-            </UTooltip>
-            <UTooltip
-                :text="$t('generatorPage.seeCompletePrompt')"
-            >
-              <UButton
-                  class="p-0"
-                  icon="i-heroicons-information-circle"
-                  variant="link"
-                  @click="state.customPrompt = initialCustomPrompt"
-              />
-            </UTooltip>
-
+              Prompts
+            </h3>
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="isOpen = false"
+            />
           </div>
         </template>
-        <UTextarea
-            v-model="state.customPrompt"
-            :placeholder="$t('generatorPage.enterCustomPrompt')"
-            :rows="7"
-        />
-      </UFormGroup>
-    </div>
+
+        <UContainer class="flex flex-col gap-2">
+          <div class="flex flex-col">
+            <span class="font-bold">
+              {{ $t("generatorPage.systemPrompt") }}
+            </span>
+            <span>{{ SYSTEM_PROMPT }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold">
+              {{ $t("generatorPage.customPrompt") }}
+            </span>
+            <span>{{ state.customPrompt }}</span>
+          </div>
+        </UContainer>
+      </UCard>
+    </UModal>
 
     <UButton
-        class="mt-2 py-2"
-        block
-        type="submit"
-        color="primary"
-        icon="i-heroicons-plus-circle"
-        :loading="loading"
+      class="mt-2 py-2"
+      block
+      type="submit"
+      color="primary"
+      icon="i-heroicons-plus-circle"
+      :loading="loading"
     >
       {{ $t("generatorPage.generateContent") }}
     </UButton>
@@ -105,10 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import { z } from "zod";
-import { ref, reactive, computed, watch } from "vue";
-import type { FormLevel, Level, Subject } from "~/models";
-import { buildUserPrompt } from "~/utils/prompt";
+import { useGeneratorForm } from "~/composables/useGeneratorForm";
+import type { FormLevel } from "~/models";
 
 const props = defineProps<{
   levels: FormLevel[];
@@ -123,74 +87,16 @@ const emit = defineEmits<{
 
 const { levels, loading } = toRefs(props);
 
-// Local state
-const isExpertMode = ref(false);
-
-const schema = computed(() => {
-  const baseSchema = {
-    level: z.string().min(1, { message: "Obligatoire" }) as z.ZodType<Level>,
-    subject: z.string().min(1, { message: "Obligatoire" }) as z.ZodType<Subject>,
-    title: z.string().min(3, { message: "Minimum 3 caractères" }),
-    nbQuestions: z.number().min(1, { message: "Minimum 1 question" }),
-  };
-
-  return z.object(baseSchema);
-});
-
-const state = reactive({
-  level: "" as Level,
-  subject: "" as Subject,
-  title: "" as string,
-  nbQuestions: 5,
-  customPrompt: "",
-});
-
-const initialCustomPrompt = computed(() => {
-    const userPrompt = buildUserPrompt(
-        state.level ?? "",
-        state.subject ?? "",
-        state.title ?? "",
-        state.nbQuestions ?? 5
-    );
-    return `${userPrompt}`;
-});
-
-const resetForm = () => {
-  state.level = "";
-  state.subject = "" as Subject;
-  state.title = "";
-  state.nbQuestions = 5;
-};
-
-watch(isExpertMode, (newValue) => {
-  if (newValue) {
-    state.customPrompt = initialCustomPrompt.value;
-  }
-});
-
-// Update custom prompt when other fields change
-watch(
-    () => [state.level, state.subject, state.title, state.nbQuestions],
-    () => {
-      if (isExpertMode.value) {
-        state.customPrompt = buildUserPrompt(
-            state.level!,
-            state.subject!,
-            state.title!,
-            state.nbQuestions
-        );
-      }
-    }
+const { isExpertMode, isOpen, schema, state, resetForm } = useGeneratorForm(
+  levels.value,
 );
 
-// Async function to generate content
 const generateContent = async () => {
   emit("update:loading", true);
   try {
     let requestBody;
 
     if (isExpertMode.value) {
-      // In expert mode, use the custom prompt without validation
       requestBody = {
         customPrompt: state.customPrompt,
         level: state.level,
@@ -199,7 +105,6 @@ const generateContent = async () => {
         nbQuestions: state.nbQuestions,
       };
     } else {
-      // In non-expert mode, validate the form
       try {
         const validatedData = schema.value.parse(state);
         requestBody = {
@@ -209,7 +114,6 @@ const generateContent = async () => {
           nbQuestions: validatedData.nbQuestions,
         };
       } catch (validationError) {
-        // Handle validation errors (e.g., display error messages)
         console.error("Validation error:", validationError);
         emit("update:loading", false);
         return;
