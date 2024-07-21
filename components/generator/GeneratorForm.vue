@@ -3,43 +3,59 @@
     class="flex flex-col gap-2"
     :state="state"
     @submit="generateContent"
-    :schema="schema"
+    :schema="isExpertMode ? null : schema"
   >
-    <UFormGroup :label="$t('scholar.level')" name="level" required>
-      <USelect
-        v-model="state.level"
-        :options="levels"
-        :placeholder="
-          $t('utils.select', { field: $t('scholar.level').toLowerCase() })
-        "
-      />
-    </UFormGroup>
+    <FormFields :state="state" :levels="levels" />
 
-    <UFormGroup :label="$t('scholar.subject')" name="subject" required>
-      <UInput
-        v-model="state.subject"
-        :placeholder="
-          $t('utils.select', { field: $t('scholar.subject').toLowerCase() })
-        "
-      />
-    </UFormGroup>
+    <FormExpertModeToggle v-model="isExpertMode" />
 
-    <UFormGroup :label="$t('scholar.title')" name="title" required>
-      <UInput
-        v-model="state.title"
-        :placeholder="
-          $t('utils.enter', { field: $t('scholar.title').toLowerCase() })
-        "
-      />
-    </UFormGroup>
+    <FormCustomPromptField
+      v-if="isExpertMode"
+      v-model="state.customPrompt"
+      @reset="resetForm"
+      @open-modal="isOpen = true"
+    />
 
-    <UFormGroup
-      :label="$t('generatorPage.nbQuestions')"
-      name="nbQuestions"
-      required
-    >
-      <UInput type="number" placeholder="5" v-model="state.nbQuestions" />
-    </UFormGroup>
+    <UModal v-model="isOpen">
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+            >
+              Prompts
+            </h3>
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="isOpen = false"
+            />
+          </div>
+        </template>
+
+        <UContainer class="flex flex-col gap-2">
+          <div class="flex flex-col">
+            <span class="font-bold">
+              {{ $t("generatorPage.systemPrompt") }}
+            </span>
+            <span>{{ SYSTEM_PROMPT }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold">
+              {{ $t("generatorPage.customPrompt") }}
+            </span>
+            <span>{{ state.customPrompt }}</span>
+          </div>
+        </UContainer>
+      </UCard>
+    </UModal>
 
     <UButton
       class="mt-2 py-2"
@@ -55,10 +71,10 @@
 </template>
 
 <script setup lang="ts">
-import { z } from "zod";
-import type { FormLevel, Level, Subject } from "~/models";
+import { useGeneratorForm } from "~/composables/useGeneratorForm";
+import type { FormLevel } from "~/models";
 
-defineProps<{
+const props = defineProps<{
   levels: FormLevel[];
   loading: boolean;
   currentContent: string;
@@ -69,29 +85,44 @@ const emit = defineEmits<{
   (e: "update:content", value: string): void;
 }>();
 
-// Zod schema for form validation
-const schema = z.object({
-  level: z.string().min(1, { message: "Obligatoire" }) as z.ZodType<Level>,
-  subject: z.string().min(1, { message: "Obligatoire" }) as z.ZodType<Subject>,
-  title: z.string().min(3, { message: "Minimum 3 caractères" }),
-  nbQuestions: z.number().min(1, { message: "Minimum 1 question" }),
-});
+const { levels, loading } = toRefs(props);
 
-const state = reactive({
-  level: undefined,
-  subject: undefined,
-  title: undefined,
-  nbQuestions: 5,
-});
+const { isExpertMode, isOpen, schema, state, resetForm } = useGeneratorForm(
+  levels.value,
+);
 
-// Async function to generate content
 const generateContent = async () => {
   emit("update:loading", true);
-
   try {
+    let requestBody;
+
+    if (isExpertMode.value) {
+      requestBody = {
+        customPrompt: state.customPrompt,
+        level: state.level,
+        subject: state.subject,
+        title: state.title,
+        nbQuestions: state.nbQuestions,
+      };
+    } else {
+      try {
+        const validatedData = schema.value.parse(state);
+        requestBody = {
+          level: validatedData.level,
+          subject: validatedData.subject,
+          title: validatedData.title,
+          nbQuestions: validatedData.nbQuestions,
+        };
+      } catch (validationError) {
+        console.error("Validation error:", validationError);
+        emit("update:loading", false);
+        return;
+      }
+    }
+
     const response = await $fetch("/api/generate-content", {
       method: "POST",
-      body: state,
+      body: requestBody,
     });
 
     if (response.content !== null) {
@@ -104,5 +135,3 @@ const generateContent = async () => {
   }
 };
 </script>
-
-<style scoped></style>
