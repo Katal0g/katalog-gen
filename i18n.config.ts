@@ -58,8 +58,8 @@ export default defineI18nConfig(() => ({
       },
       utils: {
         simpleSearch: "Rechercher",
-        select: "Sélectionner un {field}",
-        search: "Rechercher par {field}",
+        select: "Sélectionnez un {field}",
+        search: "Recherchez par {field}",
         enter: "Entrez votre {field}",
         required: "Obligatoire",
       },

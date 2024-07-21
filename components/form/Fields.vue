@@ -20,13 +20,13 @@
         <UInput
           v-model="state.subject"
           :placeholder="
-            $t('utils.select', { field: $t('scholar.subject').toLowerCase() })
+            $t('utils.enter', { field: $t('scholar.subject').toLowerCase() })
           "
         />
       </UFormGroup>
     </div>
 
-    <div class="flex gap-2 w-full">
+    <div class="flex gap-2 w-full mt-2">
       <UFormGroup
         class="w-4/5"
         :label="$t('scholar.title')"
