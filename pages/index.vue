@@ -14,12 +14,11 @@
       />
     </UCard>
 
-    <GeneratedContent :content="formattedContent" :loading="loading" />
+    <GeneratedContent :content="currentContent" :loading="loading" />
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import GeneratorForm from "~/components/generator/GeneratorForm.vue";
 import GeneratedContent from "~/components/generator/GeneratedContent.vue";
 import type { FormLevel } from "~/models";
@@ -33,10 +32,6 @@ const levels: FormLevel[] = [
 
 const loading = ref(false);
 const currentContent = ref("");
-
-const formattedContent = computed(() => {
-  return currentContent.value.replace(/\n/g, "<br>");
-});
 
 const updateLoading = (value: boolean) => {
   loading.value = value;

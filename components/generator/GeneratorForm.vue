@@ -85,14 +85,22 @@ const emit = defineEmits<{
   (e: "update:content", value: string): void;
 }>();
 
+const content = ref<string>(props.currentContent);
+
 const { levels, loading } = toRefs(props);
 
 const { isExpertMode, isOpen, schema, state, resetForm } = useGeneratorForm(
   levels.value,
 );
 
+const resetContent = () => {
+  content.value = "";
+  emit("update:content", content.value);
+};
+
 const generateContent = async () => {
   emit("update:loading", true);
+  resetContent();
   try {
     let requestBody;
 
@@ -120,13 +128,52 @@ const generateContent = async () => {
       }
     }
 
-    const response = await $fetch("/api/generate-content", {
+    const response = await $fetch<ReadableStream>("/api/generate-content", {
       method: "POST",
       body: requestBody,
+      responseType: "stream",
     });
 
-    if (response.content !== null) {
-      emit("update:content", response.content);
+    const reader = response.pipeThrough(new TextDecoderStream()).getReader();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        emit("update:loading", false);
+        break;
+      }
+
+      // Split the value into lines and process each line
+      const lines = value.split("\n");
+      let isTitle = false;
+
+      for (const line of lines) {
+        // Use regex to match content after "data:"
+        const match = line.match(/^data: (.*)$/);
+        if (match) {
+          if (match[1].startsWith("#")) {
+            isTitle = true;
+          }
+
+          if (match[1] == "---") {
+            content.value += "\n\n";
+            emit("update:content", content.value);
+          }
+          // Check if match[1] is empty, if so, add a new line
+          if (match[1].length === 0) {
+            content.value += "\n";
+            emit("update:content", content.value);
+          }
+          // Check if match[1] is a title, if so, add a new line
+          else if (isTitle) {
+            content.value += "\n";
+            emit("update:content", content.value);
+            isTitle = false;
+          }
+          content.value += match[1];
+          emit("update:content", content.value);
+        }
+      }
     }
   } catch (error) {
     console.error("Error generating content:", error);
