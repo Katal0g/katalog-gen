@@ -16,7 +16,7 @@ defineProps({
     <UButton
       :size="size"
       :icon="icon"
-      class="hover:bg-gray-100"
+      class="hover:bg-gray-100 dark:hover:bg-slate-700"
       color="black"
       variant="ghost"
     >

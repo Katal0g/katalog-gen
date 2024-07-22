@@ -4,6 +4,7 @@ export default defineI18nConfig(() => ({
   messages: {
     en: {
       generator: "Generator",
+      flashcards: "Flashcards",
       help: "Help",
       generatorPage: {
         content: "Content",
@@ -35,6 +36,7 @@ export default defineI18nConfig(() => ({
     },
     fr: {
       generator: "Générateur",
+      flashcards: "Flashcards",
       help: "Aide",
       generatorPage: {
         content: "Contenu",

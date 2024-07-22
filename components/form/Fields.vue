@@ -1,12 +1,7 @@
 <template>
   <div>
-    <div class="flex gap-2 w-full">
-      <UFormGroup
-        class="flex-grow"
-        :label="$t('scholar.level')"
-        name="level"
-        required
-      >
+    <div class="flex flex-col sm:flex-row gap-2 w-full">
+      <UFormGroup :label="$t('scholar.level')" name="level" required>
         <USelect
           v-model="state.level"
           :options="levels"
@@ -16,7 +11,12 @@
         />
       </UFormGroup>
 
-      <UFormGroup :label="$t('scholar.subject')" name="subject" required>
+      <UFormGroup
+        class="flex-grow"
+        :label="$t('scholar.subject')"
+        name="subject"
+        required
+      >
         <UInput
           v-model="state.subject"
           :placeholder="
@@ -26,9 +26,9 @@
       </UFormGroup>
     </div>
 
-    <div class="flex gap-2 w-full mt-2">
+    <div class="flex flex-col sm:flex-row gap-2 w-full mt-2">
       <UFormGroup
-        class="w-4/5"
+        class="w-full sm:w-4/5"
         :label="$t('scholar.title')"
         name="title"
         required

@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import NavLink from "~/components/navbar/NavLink.vue";
 import MobileMenu from "~/components/navbar/MobileMenu.vue";
+import ColorMode from "~/components/navbar/ColorMode.vue";
 const { setLocale } = useI18n();
 
 type LanguageType = { label: string; value: string };
@@ -26,25 +27,30 @@ watch(languageSelected, (newValue: LanguageType) => {
 </script>
 
 <template>
-  <nav class="hidden m-4 pb-2 md:flex justify-between border-b">
-    <div class="w-1/5">katalog-gen</div>
-    <div class="flex gap-4">
-      <NavLink to="/" :text="$t('generator')" />
-    </div>
-    <div class="flex gap-2 w-1/5 justify-end">
-      <USelectMenu v-model="languageSelected" :options="languages" />
-      <NavLink
+  <nav class="hidden mb-4 py-2 md:block border-b">
+    <UContainer class="flex w-full justify-between items-center">
+      <div class="w-1/5">katalog-gen</div>
+      <div class="flex gap-4">
+        <NavLink to="/" :text="$t('generator')" />
+        <NavLink to="/flashcards" :text="$t('flashcards')" />
+      </div>
+      <div class="flex items-center gap-2 w-1/5 justify-end">
+        <ColorMode />
+        <USelectMenu v-model="languageSelected" :options="languages" />
+        <NavLink
           to="help"
           :text="$t('help')"
           icon="i-heroicons-question-mark-circle"
-      />
-    </div>
+        />
+      </div>
+    </UContainer>
   </nav>
 
   <!-- Mobile Nav -->
-  <nav class="flex pb-2 my-4 justify-between border-b md:hidden">
+  <nav class="flex p-2 mb-4 justify-between items-center border-b md:hidden">
     <div>katalog-gen</div>
-    <div class="flex gap-4">
+    <div class="flex items-center gap-2">
+      <ColorMode />
       <USelectMenu v-model="languageSelected" :options="languages" />
       <UButton @click="toggleMenu" icon="i-mdi-menu" variant="soft" />
     </div>
