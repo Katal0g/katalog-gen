@@ -32,7 +32,6 @@ watch(languageSelected, (newValue: LanguageType) => {
       <div class="w-1/5">katalog-gen</div>
       <div class="flex gap-4">
         <NavLink to="/" :text="$t('generator')" />
-        <NavLink to="/flashcards" :text="$t('flashcards')" />
       </div>
       <div class="flex items-center gap-2 w-1/5 justify-end">
         <ColorMode />
