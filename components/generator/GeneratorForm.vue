@@ -25,11 +25,11 @@
       >
         <template #header>
           <div class="flex items-center justify-between">
-            <h3
+            <div
               class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
               Prompts
-            </h3>
+            </div>
             <UButton
               color="gray"
               variant="ghost"
@@ -45,13 +45,14 @@
             <span class="font-bold">
               {{ $t("generatorPage.systemPrompt") }}
             </span>
-            <span>{{ SYSTEM_PROMPT }}</span>
+            <span class="text-sm">{{ SYSTEM_PROMPT }}</span>
           </div>
+          <UDivider />
           <div class="flex flex-col">
             <span class="font-bold">
               {{ $t("generatorPage.customPrompt") }}
             </span>
-            <span>{{ state.customPrompt }}</span>
+            <span class="text-sm">{{ state.customPrompt }}</span>
           </div>
         </UContainer>
       </UCard>
