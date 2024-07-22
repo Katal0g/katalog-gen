@@ -3,18 +3,22 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "light",
   },
-  compatibilityDate: '2024-07-20',
+  compatibilityDate: "2024-07-20",
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
-  modules: ["@nuxt/ui",
+  modules: [
+    "@nuxt/ui",
     [
-    "@nuxtjs/i18n",
-    {
-      i18n: {
-        vueI18n: "./i18n.config.ts",
+      "@nuxtjs/i18n",
+      {
+        i18n: {
+          vueI18n: "./i18n.config.ts",
+        },
       },
-    },
-  ], "@nuxtjs/tailwindcss"],
+    ],
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
+  ],
   postcss: {
     plugins: {
       tailwindcss: {},

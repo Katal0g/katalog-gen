@@ -1,10 +1,9 @@
 <template>
-  <div class="mx-4 m-a">
+  <div class="dark:bg-slate-950 min-h-screen">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
     <UNotifications />
   </div>
 </template>
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>

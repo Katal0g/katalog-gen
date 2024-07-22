@@ -6,11 +6,11 @@
       </template>
 
       <GeneratorForm
-          :levels="levels"
-          :loading="loading"
-          :currentContent="currentContent"
-          @update:loading="updateLoading"
-          @update:content="updateContent"
+        :levels="levels"
+        :loading="loading"
+        :currentContent="currentContent"
+        @update:loading="updateLoading"
+        @update:content="updateContent"
       />
     </UCard>
 

@@ -9,7 +9,9 @@ const closeMenu = () => {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-white z-50 flex flex-col pt-12">
+  <div
+    class="fixed inset-0 bg-white dark:bg-slate-950 z-50 flex flex-col pt-12"
+  >
     <UButton
       @click="closeMenu"
       icon="i-mdi-close"
