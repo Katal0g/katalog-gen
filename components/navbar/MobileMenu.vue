@@ -22,6 +22,12 @@ const closeMenu = () => {
       <NavLink @click="closeMenu" to="/" :text="$t('generator')" size="xl" />
       <NavLink
         @click="closeMenu"
+        to="/flashcards"
+        :text="$t('flashcards')"
+        size="xl"
+      />
+      <NavLink
+        @click="closeMenu"
         to="help"
         :text="$t('help')"
         icon="i-heroicons-question-mark-circle"
