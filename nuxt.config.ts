@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     ],
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
+    "@nuxtjs/mdc",
   ],
   postcss: {
     plugins: {

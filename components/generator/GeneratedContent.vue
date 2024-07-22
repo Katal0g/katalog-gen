@@ -41,17 +41,10 @@ const saveFile = () => {
         </UButton>
       </div>
     </template>
-    <div class="italic text-gray" v-if="!props.content && !props.loading">
+    <div class="italic text-gray-400" v-if="!props.content">
       {{ $t("generatorPage.contentPlaceholder") }}
     </div>
-    <div class="text-center" v-if="props.loading">
-      <span class="italic text-gray">
-        {{ $t("generatorPage.robotsWorking") }}
-      </span>
-      <UProgress size="md" class="lg:w-1/3 m-auto mt-2" animation="swing" />
-    </div>
-    <div v-else v-html="props.content"></div>
+
+    <MDC v-else :value="props.content"></MDC>
   </UCard>
 </template>
-
-<style scoped></style>
