@@ -25,6 +25,7 @@ export function useGeneratorForm(levels: FormLevel[]) {
     title: "",
     nbQuestions: 5,
     customPrompt: "",
+    fileContent: "",
   });
 
   const initialCustomPrompt = computed(() => {

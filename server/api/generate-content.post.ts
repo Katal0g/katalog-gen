@@ -14,6 +14,8 @@ export default defineEventHandler(async (event: H3Event) => {
       ? body.customPrompt
       : buildUserPrompt(body.level, body.subject, body.title, body.nbQuestions);
 
+    const fileContent = body.fileContent;
+
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -23,7 +25,10 @@ export default defineEventHandler(async (event: H3Event) => {
         },
         {
           role: "user",
-          content: userPrompt,
+          content:
+            userPrompt +
+            "Base toi UNIQUEMENT sur le cours suivant : " +
+            fileContent,
         },
       ],
       stream: true,

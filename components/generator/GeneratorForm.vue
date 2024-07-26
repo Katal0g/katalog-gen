@@ -5,7 +5,11 @@
     @submit="generateContent"
     :schema="isExpertMode ? null : schema"
   >
-    <FormFields :state="state" :levels="levels" />
+    <FormFields
+      :state="state"
+      :levels="levels"
+      @update:fileContent="setFileContent"
+    />
 
     <FormExpertModeToggle v-model="isExpertMode" />
 
@@ -99,6 +103,10 @@ const resetContent = () => {
   emit("update:content", content.value);
 };
 
+const setFileContent = (fileContent: string) => {
+  state.fileContent = fileContent;
+};
+
 const generateContent = async () => {
   emit("update:loading", true);
   resetContent();
@@ -112,6 +120,7 @@ const generateContent = async () => {
         subject: state.subject,
         title: state.title,
         nbQuestions: state.nbQuestions,
+        fileContent: state.fileContent,
       };
     } else {
       try {
@@ -121,6 +130,7 @@ const generateContent = async () => {
           subject: validatedData.subject,
           title: validatedData.title,
           nbQuestions: validatedData.nbQuestions,
+          fileContent: state.fileContent,
         };
       } catch (validationError) {
         console.error("Validation error:", validationError);
