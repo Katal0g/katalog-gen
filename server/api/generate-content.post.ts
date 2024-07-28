@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { buildUserPrompt, SYSTEM_PROMPT } from "~/utils/prompt";
+import { SYSTEM_PROMPT } from "~/utils/prompt";
 import { H3Event, createEventStream, appendResponseHeaders } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,20 +10,6 @@ export default defineEventHandler(async (event: H3Event) => {
   });
 
   try {
-    let userPrompt = body.customPrompt
-      ? body.customPrompt
-      : buildUserPrompt(body.level, body.subject, body.title, body.nbQuestions);
-
-    const fileContent = body.fileContent;
-
-    if (fileContent) {
-      if (body.customPrompt) {
-        userPrompt += fileContent;
-      } else {
-        userPrompt += "\n Base toi sur le cours suivant : " + fileContent;
-      }
-    }
-
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -33,7 +19,7 @@ export default defineEventHandler(async (event: H3Event) => {
         },
         {
           role: "user",
-          content: userPrompt + fileContent,
+          content: body.finalPrompt,
         },
       ],
       stream: true,

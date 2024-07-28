@@ -14,3 +14,7 @@ export const buildUserPrompt = (
 ) => {
   return `Créé du contenu éducatif pour des apprenants de niveau ${level}, sur la matière : ${subject}, et dont le titre est : ${title}. Fourni ${nbQuestions} questions.`;
 };
+
+export const buildFilePrompt = (nbQuestions: number) => {
+  return `Génère du contenu éducatif à partir du contenu fourni en créant ${nbQuestions} questions.`;
+};
