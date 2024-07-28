@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { buildUserPrompt, SYSTEM_PROMPT } from "~/utils/prompt";
+import { SYSTEM_PROMPT } from "~/utils/prompt";
 import { H3Event, createEventStream, appendResponseHeaders } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -10,10 +10,6 @@ export default defineEventHandler(async (event: H3Event) => {
   });
 
   try {
-    const userPrompt = body.customPrompt
-      ? body.customPrompt
-      : buildUserPrompt(body.level, body.subject, body.title, body.nbQuestions);
-
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -23,7 +19,7 @@ export default defineEventHandler(async (event: H3Event) => {
         },
         {
           role: "user",
-          content: userPrompt,
+          content: body.finalPrompt,
         },
       ],
       stream: true,

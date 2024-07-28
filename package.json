@@ -19,6 +19,7 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "nuxt": "^3.12.2",
     "openai": "^4.52.7",
+    "pdfreader": "^3.0.2",
     "vue": "latest"
   },
   "devDependencies": {

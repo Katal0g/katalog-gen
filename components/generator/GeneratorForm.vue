@@ -5,13 +5,18 @@
     @submit="generateContent"
     :schema="isExpertMode ? null : schema"
   >
-    <FormFields :state="state" :levels="levels" />
+    <FormFields
+      :state="state"
+      :levels="levels"
+      :isExpertMode="isExpertMode"
+      @update:fileContent="setFileContent"
+    />
 
     <FormExpertModeToggle v-model="isExpertMode" />
 
     <FormCustomPromptField
       v-if="isExpertMode"
-      v-model="state.customPrompt"
+      v-model="state.finalPrompt"
       @reset="resetForm"
       @open-modal="isOpen = true"
     />
@@ -52,7 +57,7 @@
             <span class="font-bold">
               {{ $t("generatorPage.customPrompt") }}
             </span>
-            <span class="text-sm">{{ state.customPrompt }}</span>
+            <span class="text-sm">{{ state.finalPrompt }}</span>
           </div>
         </UContainer>
       </UCard>
@@ -65,6 +70,7 @@
       color="primary"
       icon="i-heroicons-plus-circle"
       :loading="loading"
+      :disabled="state.isFileMode && !state.fileContent"
     >
       {{ $t("generatorPage.generateContent") }}
     </UButton>
@@ -86,11 +92,13 @@ const emit = defineEmits<{
   (e: "update:content", value: string): void;
 }>();
 
+const isOpen = ref<boolean>(false);
+
 const content = ref<string>(props.currentContent);
 
 const { levels, loading } = toRefs(props);
 
-const { isExpertMode, isOpen, schema, state, resetForm } = useGeneratorForm(
+const { isExpertMode, schema, state, resetForm } = useGeneratorForm(
   levels.value,
 );
 
@@ -99,29 +107,31 @@ const resetContent = () => {
   emit("update:content", content.value);
 };
 
+const setFileContent = (fileContent: string) => {
+  state.fileContent = fileContent;
+};
+
 const generateContent = async () => {
   emit("update:loading", true);
   resetContent();
   try {
     let requestBody;
-
-    if (isExpertMode.value) {
+    let finalPrompt = state.finalPrompt;
+    if (state.isFileMode) {
+      finalPrompt +=
+        "\n Base toi uniquement sur le contenu fourni pour générer le contenu éducatif demandé. " +
+        state.fileContent;
       requestBody = {
-        customPrompt: state.customPrompt,
-        level: state.level,
-        subject: state.subject,
-        title: state.title,
-        nbQuestions: state.nbQuestions,
+        finalPrompt,
       };
     } else {
+      requestBody = {
+        finalPrompt,
+      };
+    }
+    if (!isExpertMode.value && !state.isFileMode) {
       try {
-        const validatedData = schema.value.parse(state);
-        requestBody = {
-          level: validatedData.level,
-          subject: validatedData.subject,
-          title: validatedData.title,
-          nbQuestions: validatedData.nbQuestions,
-        };
+        schema.value.parse(state);
       } catch (validationError) {
         console.error("Validation error:", validationError);
         emit("update:loading", false);

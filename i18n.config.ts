@@ -19,6 +19,9 @@ export default defineI18nConfig(() => ({
         resetCustomPrompt: "Reset Custom Prompt",
         seeCompletePrompt: "See complete prompt",
         systemPrompt: "System prompt (always sent)",
+        file: "File",
+        fileMode: "File Mode",
+        manualMode: "Manual Mode",
       },
       scholar: {
         level: "Level",
@@ -50,6 +53,9 @@ export default defineI18nConfig(() => ({
         resetCustomPrompt: "Réinitialiser le prompt personnalisé",
         seeCompletePrompt: "Voir le prompt complet",
         systemPrompt: "Prompt système (toujours envoyé)",
+        file: "Fichier",
+        fileMode: "Mode Fichier",
+        manualMode: "Mode Manuel",
       },
       scholar: {
         level: "Niveau",
