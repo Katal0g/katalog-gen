@@ -53,7 +53,6 @@
         class="w-full sm:w-4/5"
         :label="$t('generatorPage.file')"
         name="File"
-        required
       >
         <UInput type="file" @change="uploadFile" />
       </UFormGroup>
