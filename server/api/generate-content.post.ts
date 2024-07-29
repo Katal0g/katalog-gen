@@ -1,17 +1,15 @@
-import { OpenAI } from "openai";
+import MistralClient from "@mistralai/mistralai";
 import { SYSTEM_PROMPT } from "~/utils/prompt";
 import { H3Event, createEventStream, appendResponseHeaders } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody(event);
 
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+  const client = new MistralClient(process.env.MISTRAL_API_KEY);
 
   try {
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const stream = client.chatStream({
+      model: "open-mistral-nemo",
       messages: [
         {
           role: "system",
@@ -22,7 +20,6 @@ export default defineEventHandler(async (event: H3Event) => {
           content: body.finalPrompt,
         },
       ],
-      stream: true,
     });
 
     const eventStream = createEventStream(event);

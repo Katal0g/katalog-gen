@@ -20,8 +20,7 @@ export default defineI18nConfig(() => ({
         seeCompletePrompt: "See complete prompt",
         systemPrompt: "System prompt (always sent)",
         file: "File",
-        fileMode: "File Mode",
-        manualMode: "Manual Mode",
+        manual: "Manual",
       },
       scholar: {
         level: "Level",
@@ -54,8 +53,7 @@ export default defineI18nConfig(() => ({
         seeCompletePrompt: "Voir le prompt complet",
         systemPrompt: "Prompt système (toujours envoyé)",
         file: "Fichier",
-        fileMode: "Mode Fichier",
-        manualMode: "Mode Manuel",
+        manual: "Manuel",
       },
       scholar: {
         level: "Niveau",

@@ -7,11 +7,11 @@
           <div class="mt-2">
             <UFormGroup
               class="w-full"
-              :label="$t('generatorPage.file')"
+              :label="$t('generatorPage.file') + ' (.pdf)'"
               name="File"
               required
             >
-              <UInput type="file" @change="uploadFile" />
+              <UInput type="file" @change="uploadFile" accept=".pdf" />
             </UFormGroup>
           </div>
         </div>
@@ -133,12 +133,11 @@ const { t } = useI18n();
 const items = computed(() => [
   {
     key: "file",
-    label: t("generatorPage.fileMode"),
-    icon: "i-heroicons-information-circle",
+    label: t("generatorPage.file"),
   },
   {
     key: "manual",
-    label: t("generatorPage.manualMode"),
+    label: t("generatorPage.manual"),
   },
 ]);
 
