@@ -1,3 +1,3 @@
-# 🎨 Katalog Gen
+# 🎨 katalogen
 
 Educational content generator.

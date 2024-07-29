@@ -29,7 +29,7 @@ watch(languageSelected, (newValue: LanguageType) => {
 <template>
   <nav class="hidden mb-4 py-2 md:block border-b">
     <UContainer class="flex w-full justify-between items-center">
-      <div class="w-1/5">katalog-gen</div>
+      <div class="w-1/5">katalogen</div>
       <div class="flex gap-4">
         <NavLink to="/" :text="$t('generator')" />
       </div>
@@ -46,8 +46,10 @@ watch(languageSelected, (newValue: LanguageType) => {
   </nav>
 
   <!-- Mobile Nav -->
-  <nav class="flex p-2 mb-4 justify-between items-center border-b md:hidden">
-    <div>katalog-gen</div>
+  <nav
+    class="flex p-2 mb-4 px-4 justify-between items-center border-b md:hidden"
+  >
+    <div>katalogen</div>
     <div class="flex items-center gap-2">
       <ColorMode />
       <USelectMenu v-model="languageSelected" :options="languages" />
