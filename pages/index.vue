@@ -1,19 +1,21 @@
 <template>
-  <UCard class="w-full h-fit lg:w-1/2">
-    <template #header>
-      <h2 class="text-2xl font-bold">🤖 {{ $t("generator") }}</h2>
-    </template>
+  <div class="flex flex-col gap-4 w-full md:flex-row">
+    <UCard class="min-w-96 flex-1 h-fit">
+      <template #header>
+        <h2 class="text-2xl font-bold">🤖 {{ $t("generator") }}</h2>
+      </template>
 
-    <GeneratorForm
-      :levels="levels"
-      :loading="loading"
-      :currentContent="currentContent"
-      @update:loading="updateLoading"
-      @update:content="updateContent"
-    />
-  </UCard>
+      <GeneratorForm
+        :levels="levels"
+        :loading="loading"
+        :currentContent="currentContent"
+        @update:loading="updateLoading"
+        @update:content="updateContent"
+      />
+    </UCard>
 
-  <GeneratedContent :content="currentContent" :loading="loading" />
+    <GeneratedContent :content="currentContent" :loading="loading" />
+  </div>
 </template>
 
 <script setup lang="ts">
