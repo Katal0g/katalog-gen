@@ -7,11 +7,11 @@
           <div class="mt-2">
             <UFormGroup
               class="w-full"
-              :label="$t('generatorPage.file')"
+              :label="$t('generatorPage.file') + ' (.pdf)'"
               name="File"
               required
             >
-              <UInput type="file" @change="uploadFile" />
+              <UInput type="file" @change="uploadFile" accept=".pdf" />
             </UFormGroup>
           </div>
         </div>
