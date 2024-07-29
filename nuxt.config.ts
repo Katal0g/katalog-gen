@@ -1,8 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  app: {
-    baseURL: "/katalogen/",
-  },
   compatibilityDate: "2024-07-20",
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
