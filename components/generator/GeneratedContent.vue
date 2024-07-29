@@ -19,7 +19,11 @@
       {{ $t("generatorPage.contentPlaceholder") }}
     </div>
 
-    <div v-else v-html="parseAPIResponse(props.content)" class="w-full"></div>
+    <div
+      v-else
+      v-html="parseAPIResponse(props.content)"
+      class="w-full dark:text-gray-300"
+    ></div>
   </UCard>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4 w-full md:flex-row">
-    <UCard class="min-w-96 flex-1 h-fit">
+    <UCard class="w-full md:w-[600px] h-fit">
       <template #header>
         <h2 class="text-2xl font-bold">🤖 {{ $t("generator") }}</h2>
       </template>
