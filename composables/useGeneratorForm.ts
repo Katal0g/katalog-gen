@@ -66,14 +66,6 @@ export function useGeneratorForm(levels: FormLevel[]) {
     }
   });
 
-  // Detect changes on isFileMode
-  watch(
-    () => state.isFileMode,
-    (newValue) => {
-      console.log("isFileMode changed to", newValue);
-    },
-  );
-
   // Update prompt on form changes
   watch(
     () => [
