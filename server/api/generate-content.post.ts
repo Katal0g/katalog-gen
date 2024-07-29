@@ -20,6 +20,7 @@ export default defineEventHandler(async (event: H3Event) => {
           content: body.finalPrompt,
         },
       ],
+      safePrompt: true,
     });
 
     const eventStream = createEventStream(event);
