@@ -5,6 +5,9 @@
     </template>
     <template #hint>
       <div class="flex gap-2 pb-1">
+        <span class="pr-1 italic text-gray-500"
+          >{{ nbCharacters }} / {{ MAX_LENGTH }}</span
+        >
         <UTooltip :text="$t('generatorPage.resetCustomPrompt')">
           <UButton
             class="p-0"
@@ -29,12 +32,13 @@
       @update:model-value="$emit('update:modelValue', $event)"
       :placeholder="$t('generatorPage.enterCustomPrompt')"
       :rows="7"
+      :maxlength="MAX_LENGTH"
     />
   </UFormGroup>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   modelValue: string;
 }>();
 defineEmits<{
@@ -42,4 +46,7 @@ defineEmits<{
   (e: "reset"): void;
   (e: "openModal"): void;
 }>();
+
+const MAX_LENGTH = 750;
+const nbCharacters = computed(() => props.modelValue.length);
 </script>
