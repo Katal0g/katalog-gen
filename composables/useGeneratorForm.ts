@@ -38,10 +38,16 @@ export function useGeneratorForm(levels: FormLevel[]) {
   });
 
   const resetForm = () => {
-    state.level = "";
-    state.subject = "" as Subject;
-    state.title = "";
-    state.nbQuestions = 5;
+    if (state.isFileMode) {
+      state.finalPrompt = buildFilePrompt(5);
+    } else {
+      state.finalPrompt = buildUserPrompt(
+        state.level,
+        state.subject,
+        state.title,
+        state.nbQuestions,
+      );
+    }
   };
 
   // Update prompt on expert mode change
@@ -59,14 +65,6 @@ export function useGeneratorForm(levels: FormLevel[]) {
       }
     }
   });
-
-  // Detect changes on isFileMode
-  watch(
-    () => state.isFileMode,
-    (newValue) => {
-      console.log("isFileMode changed to", newValue);
-    },
-  );
 
   // Update prompt on form changes
   watch(

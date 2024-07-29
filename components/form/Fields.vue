@@ -61,7 +61,7 @@
 
           <div class="flex flex-col sm:flex-row gap-2 w-full mt-2">
             <UFormGroup
-              class="w-full sm:w-4/5"
+              class="w-full"
               :class="{
                 'opacity-40': isExpertMode,
               }"

@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
   },
   ui: {
     icons: ["mdi", "heroicons"],
