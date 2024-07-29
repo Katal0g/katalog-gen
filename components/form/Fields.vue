@@ -133,12 +133,11 @@ const { t } = useI18n();
 const items = computed(() => [
   {
     key: "file",
-    label: t("generatorPage.fileMode"),
-    icon: "i-heroicons-information-circle",
+    label: t("generatorPage.file"),
   },
   {
     key: "manual",
-    label: t("generatorPage.manualMode"),
+    label: t("generatorPage.manual"),
   },
 ]);
 
