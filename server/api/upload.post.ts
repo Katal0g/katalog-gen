@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 import { PdfReader } from "pdfreader";
 import { parsePDFReaderResponse } from "~/utils/parsing";
 
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const file = files[0];
   const filePath = path.join(process.cwd(), "public", file.filename as string);
-  fs.writeFileSync(filePath, file.data);
+  await fs.writeFile(filePath, file.data);
 
   return new Promise((resolve, reject) => {
     const PDFreader = new PdfReader(null);
@@ -34,6 +34,6 @@ export default defineEventHandler(async (event) => {
     });
 
     // Delete the file after parsing
-    fs.unlinkSync(filePath);
+    fs.unlink(filePath);
   });
 });
