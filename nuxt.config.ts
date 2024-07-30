@@ -18,9 +18,6 @@ export default defineNuxtConfig({
     "@nuxtjs/mdc",
     "@nuxt/image",
   ],
-  nitro: {
-    preset: "node-server",
-  },
   postcss: {
     plugins: {
       tailwindcss: {},
