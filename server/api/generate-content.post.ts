@@ -1,11 +1,12 @@
 import MistralClient from "@mistralai/mistralai";
 import { SYSTEM_PROMPT } from "~/utils/prompt";
 import { H3Event, createEventStream, appendResponseHeaders } from "h3";
+const runtimeConfig = useRuntimeConfig();
 
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody(event);
 
-  const client = new MistralClient(process.env.MISTRAL_API_KEY);
+  const client = new MistralClient(runtimeConfig.MISTRAL_API_KEY);
 
   try {
     const stream = client.chatStream({
