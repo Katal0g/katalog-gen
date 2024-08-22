@@ -1,4 +1,4 @@
-import MistralClient from "@mistralai/mistralai";
+import { Mistral } from "@mistralai/mistralai";
 import { SYSTEM_PROMPT } from "~/utils/prompt";
 import { H3Event, createEventStream, appendResponseHeaders } from "h3";
 const runtimeConfig = useRuntimeConfig();
@@ -6,22 +6,18 @@ const runtimeConfig = useRuntimeConfig();
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody(event);
 
-  const client = new MistralClient(runtimeConfig.MISTRAL_API_KEY);
+  const client = new Mistral({ apiKey: runtimeConfig.MISTRAL_API_KEY });
 
   try {
-    const stream = client.chatStream({
-      model: "open-mistral-nemo",
+    const stream = await client.agents.stream({
       messages: [
-        {
-          role: "system",
-          content: SYSTEM_PROMPT,
-        },
         {
           role: "user",
           content: body.finalPrompt,
         },
       ],
-      safePrompt: true,
+      agentId: runtimeConfig.MISTRAL_AGENT_ID,
+      stream: true,
     });
 
     const eventStream = createEventStream(event);
@@ -33,13 +29,13 @@ export default defineEventHandler(async (event: H3Event) => {
 
     (async () => {
       for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || "";
+        const content = chunk.data.choices[0]?.delta?.content || "";
 
         if (content) {
           eventStream.push(content).then();
         }
 
-        if (chunk.choices[0]?.finish_reason === "stop") {
+        if (chunk.data.choices[0].finishReason === "stop") {
           eventStream.close().then();
           break;
         }

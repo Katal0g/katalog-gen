@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
+    MISTRAL_AGENT_ID: process.env.MISTRAL_AGENT_ID,
   },
   ui: {
     icons: ["mdi", "heroicons"],
